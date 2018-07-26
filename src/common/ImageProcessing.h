@@ -324,7 +324,7 @@ void cylindricalFilter(typename imageType::Pointer inputImage, double radious)
 }
 
 template<typename inputType, typename labelMapType>
-typename labelMapType::Pointer connectedComponents(typename inputType::Pointer image)
+typename labelMapType::Pointer connectedComponents(typename inputType::Pointer image, std::string outputFileName="")
 {
 
 	typedef itk::ConnectedComponentImageFilter<inputType, inputType> ConnectedComponentImageFilterType;
@@ -347,7 +347,9 @@ typename labelMapType::Pointer connectedComponents(typename inputType::Pointer i
 	typename RGBFilterType::Pointer rgbFilter = RGBFilterType::New();
 	rgbFilter->SetInput(connected->GetOutput());
 
-	io::writeImage < rgbImageType > (rgbFilter->GetOutput(), "output/rgb.nii");
+	if(outputFileName!="")
+
+	io::writeImage < rgbImageType > (rgbFilter->GetOutput(), outputFileName);
 
 	io::print("Connected Components", 1);
 

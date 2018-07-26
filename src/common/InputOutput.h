@@ -84,7 +84,7 @@ std::vector<std::string> imageNamesGenerator(const std::string &dir, std::string
 	numericSeriesFileNames->SetIncrementIndex(1);
 	numericSeriesFileNames->SetSeriesFormat(dir + format + "%d." + fileExt.c_str());
 
-	io::print("Create names", 1);
+	io::print("Creating names", 1);
 
 	return numericSeriesFileNames->GetFileNames();
 
@@ -100,7 +100,7 @@ void writeImage(const typename imageType::Pointer &image, const std::string &fil
 	writer->SetInput(image);
 	writer->Update();
 
-	print("Write image " + message, true);
+	print("Writing image " + message, true);
 }
 
 template<typename imageType>
@@ -166,7 +166,7 @@ void writeMesh(type::meshTypePointer inputMesh, const std::string & fileName)
 	writer->SetFileName(fileName);
 	writer->SetInput(inputMesh);
 	writer->Update();
-	io::print("Write mesh", 1);
+	io::print("Writing mesh", 1);
 }
 
 }

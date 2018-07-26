@@ -36,9 +36,10 @@ public:
 	void readImageSeries(const std::string &dirName, std::string format, const std::string & fileExt);
 	void createImage3D();
 	std::vector<type::grayImagePointer> imageSeries; //to store the original images
-	void setFixedImage(type::grayImagePointer fixedImage);
+	void setFixedImage(std::string fixedImageName);
 	void setFixedImage(unsigned imageId);
 	type::grayImagePointer3D getImage3D() const;
+	type::grayImagePointer3D getSegmentedImage3D() const;
 
 	double getConversionFactor() const;
 	double getHeight() const;
@@ -49,6 +50,7 @@ public:
 	void setAbradedHeight(double height);
 	void setAbradedHeightByLayer(const std::vector<double>& abradedHeightByLayer);
 	void setBreakPoint(int breakPoint);
+	void setReducedRadius(double radius);
 
 private:
 	void changeCanvasSize();
@@ -64,18 +66,24 @@ private:
 	int breakPoint;
 
 	type::grayImagePointer3D image3D;
+	type::grayImagePointer3D segmentedImage3D;
 
 	double abradedHeight; //in millimeters
 	double abradedMean; //in millimeters, how many millimeters are there between two samples, in average
 	double conversionFactor; //how many pixels are there in a millimeter.
+	double reducedRadius; //in pixels
 
 	std::vector<double> abradedHeightByLayer; //it contains the abraded height by sample
 
 };
 Image3D::Image3D() :
-		fixedImageId(-1), abradedHeight(0.0), abradedMean(0.0), conversionFactor(0), breakPoint(-1)
+		fixedImageId(-1), abradedHeight(0.0), abradedMean(0.0), conversionFactor(0), breakPoint(-10), reducedRadius(-1)
 {
 
+}
+void Image3D::setReducedRadius(double radius)
+{
+	this->reducedRadius = radius;
 }
 
 void Image3D::setBreakPoint(int breakPoint)
@@ -126,6 +134,11 @@ type::grayImagePointer3D Image3D::getImage3D() const
 	return image3D;
 }
 
+type::grayImagePointer3D Image3D::getSegmentedImage3D() const
+{
+	return segmentedImage3D;
+}
+
 void Image3D::setFixedImage(unsigned imageId)
 {
 	fixedImageId = static_cast<int>(imageId);
@@ -153,15 +166,19 @@ type::grayImagePointer3D Image3D::imageSeriesTo3DImage()
 	}
 	filter->Update();
 
-	io::print("Creating the 3D image", 1);
+	//io::print("Creating the 3D image", 1);
 
 	return filter->GetOutput();;
 
 }
 
-void Image3D::setFixedImage(type::grayImagePointer fixedImage)
+void Image3D::setFixedImage(std::string fixedImageName)
 {
-	this->fixedImage = io::imageCast<type::grayImageType, type::grayFloatImageType>(fixedImage);
+	if (fixedImageName != "")
+	{
+		type::grayImagePointer tmpImage = io::readImage<type::grayImageType>(fixedImageName);
+		this->fixedImage = io::imageCast<type::grayImageType, type::grayFloatImageType>(tmpImage);
+	}
 }
 
 /*
@@ -319,9 +336,8 @@ void Image3D::fillAbradedSamplesByInterpolation()
 
 		for (int j = 0; j < abradedHeightInPixelsRounded; ++j)
 		{
-			if ((breakPoint-1) == i) //there is a break point
+			if ((breakPoint - 1) == i) //there is a break point
 			{
-				std::cout<<"break point"<<std::endl;
 				newImageSeries.push_back(imageSeries[i + 1]);
 			}
 			else
@@ -438,7 +454,7 @@ void Image3D::closeBorders(double radious)
 
 	}
 
-	io::print("Closing borders", 1);
+	io::print("Closing borders by reducing radius", 1);
 }
 
 void Image3D::imageSeriesSegmentation()
@@ -465,18 +481,23 @@ void Image3D::createImage3D()
 	changeCanvasSize();
 
 //image series alignment
-	//imageSeriesAlignment();
+	imageSeriesAlignment();
 
 //interpolation
 //fillAbradedSamplesByInterpolationAverage();
 	fillAbradedSamplesByInterpolation();
 
-	//imageSeriesSegmentation();
+	image3D = imageSeriesTo3DImage();
+
+	imageSeriesSegmentation();
 
 	//closing borders
-	//closeBorders(890);
+	if (reducedRadius > -1)
+	{
+		closeBorders(this->reducedRadius);
+	}
 
-	image3D = imageSeriesTo3DImage();
+	segmentedImage3D = imageSeriesTo3DImage();
 
 //updating image properties
 	type::grayImageType3D::SpacingType spacing;
@@ -484,8 +505,9 @@ void Image3D::createImage3D()
 	spacing[0] = spacing[1] = spacing[2] = 1 / conversionFactor;
 
 	image3D->SetSpacing(spacing);
+	segmentedImage3D->SetSpacing(spacing);
 
-	io::print("Create Image 3D", 1);
+	io::print("Creating 3D Images", 1);
 
 }
 

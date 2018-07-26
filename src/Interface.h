@@ -26,6 +26,7 @@ public:
 	std::string getImageFormat() const;
 	std::string getTestName() const;
 	int getBreakPoint() const;
+	double getReducedRadius() const;
 
 	void readInputFile();
 	void readInputFileOld();
@@ -40,6 +41,7 @@ private:
 	std::string testName;
 	std::vector<double> abradedHeightByLayer;
 	int breakPoint;
+	double reducedRadius;
 
 	void cases(std::string tagName, std::string value);
 
@@ -55,7 +57,13 @@ Interface::Interface(std::string inputFileName)
 	this->imageFormat = "tif";
 	this->testName = "corrosion";
 	this->breakPoint = -1; //no break point
+	this->reducedRadius = -1; // no reduced radio
 
+}
+
+double Interface::getReducedRadius() const
+{
+	return this->reducedRadius;
 }
 
 void Interface::cases(std::string tagName, std::string value)
@@ -93,6 +101,11 @@ void Interface::cases(std::string tagName, std::string value)
 	if (tagName == "breakPoint")
 	{
 		this->breakPoint = std::stoi(value);
+	}
+	if(tagName == "reducedRadius")
+	{
+		this->reducedRadius = std::stoi(value);
+
 	}
 
 }
@@ -155,7 +168,6 @@ void Interface::readInputFile()
 				if (tag != "abradedHeightByLayer")
 				{
 					line >> value;
-					std::cout << value << std::endl;
 					cases(tag, value);
 				}
 				else
@@ -163,7 +175,7 @@ void Interface::readInputFile()
 					while (inputFile >> value)
 					{
 						abradedHeightByLayer.push_back(std::stod(value));
-						std::cout << value << std::endl;
+
 					}
 				}
 				line.clear();
