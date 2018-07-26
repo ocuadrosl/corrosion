@@ -2,8 +2,8 @@
 // Name        : CorrosionAxial.cpp
 // Author      : Oscar
 // Version     :
-// Copyright   : Your copyright notice
-// Description : Hello World in C, Ansi-style
+// Copyright   : 
+// Description : 
 //============================================================================
 
 #include <iostream>
@@ -14,8 +14,19 @@
 
 #include "itkLabelMap.h"
 
-int main(void)
+int main(int argc, const char* argv[])
 {
+
+	std::string inputFile;
+	if(argc == 2)
+	{		
+		std::string inputFile = argv[1];
+		
+	}
+	else
+	{
+		std::string inputFile = "input/electrode5_Imagens_tratadas/electrode5Tratadas.txt";
+	}
 
 	Interface interface("input/eletrodo5_Imagens_tratadas/electrode5Tratadas.txt");
 	interface.readInputFile();
@@ -64,12 +75,12 @@ int main(void)
 
 //connected component
 	std::string rgbName = interface.getOutputDir() + "/" + interface.getTestName() + "rgb.nii";
-	labelMapType3D::Pointer labelMap3D = ip::connectedComponents<type::grayImageType3D, labelMapType3D>(outputImage, rgbName);
+	labelMapType3D::Pointer labelMap3D = ip::connectedComponents<type::grayImageType3D, labelMapType3D>(outputSegmentedImage, rgbName);
 
-//ip::computeLabelMapStatistics(labelMap3D);
+	ip::computeLabelMapStatistics(labelMap3D, interface.getOutputDir() + "/" + interface.getTestName()+"Metrics.txt" );
 
 	std::string vtkName = interface.getOutputDir() + "/" + interface.getTestName() + ".vtk";
-	type::meshTypePointer mesh = ip::extractIsoSurface(outputImage, 1);
+	type::meshTypePointer mesh = ip::extractIsoSurface(outputSegmentedImage, 1);
 	io::writeMesh(mesh, vtkName);
 
 	std::cout << "DONE" << std::endl;

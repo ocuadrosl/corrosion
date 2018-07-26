@@ -6,14 +6,14 @@ set (CMAKE_CXX_STANDARD 11)
 find_package(ITK REQUIRED)
 include(${ITK_USE_FILE})
 
-find_package(VTK REQUIRED)
-include(${VTK_USE_FILE})
+#find_package(VTK REQUIRED)
+#include(${VTK_USE_FILE})
 
 include_directories("../src/")
 
 
 add_executable(CorrosionAxial "../src/CorrosionAxial.cpp")
 
-target_link_libraries(CorrosionAxial  ${ITK_LIBRARIES}  ${VTK_LIBRARIES})
+target_link_libraries(CorrosionAxial  ${ITK_LIBRARIES} )#  ${VTK_LIBRARIES})
 
 

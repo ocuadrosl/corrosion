@@ -373,17 +373,21 @@ void invertPixelValue(typename imageType::Pointer inputImage)
 
 }
 
-void computeLabelMapStatistics(type::labelMapType3D::Pointer labelMap)
+void computeLabelMapStatistics(type::labelMapType3D::Pointer labelMap, std::string outputFileName)
 {
 
-	std::cout << "Number of Objects " << labelMap->GetNumberOfLabelObjects() << std::endl;
 
-	std::cout << "ID, " << "Max Diameter, " << "Max Height, " << "Volume, " << "Position" << std::endl;
+	std::ofstream outputFile(outputFileName);
+
+	outputFile << "Number of Objects " << labelMap->GetNumberOfLabelObjects() << std::endl;
+
+	outputFile << "ID, " << "Max Diameter, " << "Max Height, " << "Volume, " << "Position" << std::endl;
 
 	for (unsigned i = 1; i < labelMap->GetNumberOfLabelObjects(); ++i)
 	{
 
 		std::cout << i << ", "; //Pit id
+		outputFile<< i << ", ";
 
 		unsigned size = labelMap->GetNthLabelObject(i)->Size();
 
@@ -419,14 +423,16 @@ void computeLabelMapStatistics(type::labelMapType3D::Pointer labelMap)
 			max[2] = (zTmp > max[2]) ? zTmp : max[2];
 		}
 
-		std::cout << ((std::abs(max[0] - min[0]) > std::abs(max[2] - min[2])) ? std::abs(max[0] - min[0]) : std::abs(max[2] - min[2])) << ", ";
-		std::cout << std::abs(max[1] - min[1]) << ", ";
+		outputFile << ((std::abs(max[0] - min[0]) > std::abs(max[2] - min[2])) ? std::abs(max[0] - min[0]) : std::abs(max[2] - min[2])) << ", ";
+		outputFile << std::abs(max[1] - min[1]) << ", ";
 
-		std::cout << labelMap->GetNthLabelObject(i)->Size() << ", ";
+		outputFile << labelMap->GetNthLabelObject(i)->Size() << ", ";
 
-		std::cout << "[" << xMean / size << "- " << yMean / size << "- " << zMean / size << "]" << std::endl;
+		outputFile << "[" << xMean / size << "- " << yMean / size << "- " << zMean / size << "]" << std::endl;
 
 	}
+
+	outputFile.close();
 
 	io::print("Statistics", 1);
 
