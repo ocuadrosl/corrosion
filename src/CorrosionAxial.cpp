@@ -79,6 +79,10 @@ int main(int argc, const char* argv[])
 
 	ip::computeLabelMapStatistics(labelMap3D, interface.getOutputDir() + "/" + interface.getTestName()+"Metrics.txt" );
 
+	
+	
+
+	//creating mesh
 	std::string vtkName = interface.getOutputDir() + "/" + interface.getTestName() + ".vtk";
 	type::meshTypePointer mesh = ip::extractIsoSurface(outputSegmentedImage, 1);
 	io::writeMesh(mesh, vtkName);

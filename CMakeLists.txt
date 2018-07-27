@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.6)
 PROJECT(CorrosionAxial)
 
-set (CMAKE_CXX_STANDARD 11)
+set (CMAKE_CXX_STANDARD 17)
 
 find_package(ITK REQUIRED)
 include(${ITK_USE_FILE})

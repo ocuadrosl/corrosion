@@ -386,8 +386,12 @@ void computeLabelMapStatistics(type::labelMapType3D::Pointer labelMap, std::stri
 	for (unsigned i = 1; i < labelMap->GetNumberOfLabelObjects(); ++i)
 	{
 
-		std::cout << i << ", "; //Pit id
+		//std::cout << i << ", "<<std::flush; //Pit id
 		outputFile<< i << ", ";
+
+		int  pitPercentage = math::to_percentage<int>(i,  labelMap->GetNumberOfLabelObjects());
+
+		std::cout << "Computing metrics " << pitPercentage << "%" << std::endl<<std::flush;
 
 		unsigned size = labelMap->GetNthLabelObject(i)->Size();
 
@@ -403,6 +407,10 @@ void computeLabelMapStatistics(type::labelMapType3D::Pointer labelMap, std::stri
 		int xTmp;
 		int yTmp;
 		int zTmp;
+
+		int partialPitPercentage = -1;
+		int tmpPercentage = 0;
+
 
 		for (unsigned j = 0; j < size; ++j)
 		{
@@ -421,6 +429,14 @@ void computeLabelMapStatistics(type::labelMapType3D::Pointer labelMap, std::stri
 			max[0] = (xTmp > max[0]) ? xTmp : max[0];
 			max[1] = (yTmp > max[1]) ? yTmp : max[1];
 			max[2] = (zTmp > max[2]) ? zTmp : max[2];
+
+
+			tmpPercentage = math::to_percentage<int>(j+1, size);
+			if(partialPitPercentage < tmpPercentage)
+			{
+				partialPitPercentage = tmpPercentage;
+				std::cout << "Partial pit"<< partialPitPercentage << "%" <<" of "<<pitPercentage<<"%"<<std::endl;
+			}
 		}
 
 		outputFile << ((std::abs(max[0] - min[0]) > std::abs(max[2] - min[2])) ? std::abs(max[0] - min[0]) : std::abs(max[2] - min[2])) << ", ";
