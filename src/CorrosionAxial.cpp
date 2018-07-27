@@ -28,7 +28,7 @@ int main(int argc, const char* argv[])
 		std::string inputFile = "input/electrode5_Imagens_tratadas/electrode5Tratadas.txt";
 	}
 
-	Interface interface("input/eletrodo5_Imagens_tratadas/electrode5Tratadas.txt");
+	Interface interface(inputFile);
 	interface.readInputFile();
 
 	Image3D image3D;
