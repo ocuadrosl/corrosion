@@ -415,6 +415,7 @@ void computeLabelMapStatistics(type::labelMapType3D::Pointer labelMap, std::stri
 		type::labelObjectType3D::Pointer labelObject = labelMap->GetNthLabelObject(i);
 
 		type::labelObjectType3D::IndexType index;		
+		
 		for (unsigned j = 0; j < size; ++j)
 		{
 			
