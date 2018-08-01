@@ -373,17 +373,25 @@ void invertPixelValue(typename imageType::Pointer inputImage)
 
 }
 
-void computeLabelMapStatistics(type::labelMapType3D::Pointer labelMap)
+void computeLabelMapStatistics(type::labelMapType3D::Pointer labelMap, std::string outputFileName)
 {
 
-	std::cout << "Number of Objects " << labelMap->GetNumberOfLabelObjects() << std::endl;
 
-	std::cout << "ID, " << "Max Diameter, " << "Max Height, " << "Volume, " << "Position" << std::endl;
+	std::ofstream outputFile(outputFileName);
+
+	outputFile << "Number of Objects " << labelMap->GetNumberOfLabelObjects() << std::endl;
+
+	outputFile << "ID, " << "Max Diameter, " << "Max Height, " << "Volume, " << "Position" << std::endl;
 
 	for (unsigned i = 1; i < labelMap->GetNumberOfLabelObjects(); ++i)
 	{
 
-		std::cout << i << ", "; //Pit id
+		//std::cout << i << ", "<<std::flush; //Pit id
+		outputFile<< i << ", ";
+
+		int  pitPercentage = math::to_percentage<int>(i,  labelMap->GetNumberOfLabelObjects());
+
+		std::cout << "Computing metrics " << pitPercentage << "%" << std::endl<<std::flush;
 
 		unsigned size = labelMap->GetNthLabelObject(i)->Size();
 
@@ -400,11 +408,24 @@ void computeLabelMapStatistics(type::labelMapType3D::Pointer labelMap)
 		int yTmp;
 		int zTmp;
 
+		int partialPitPercentage = -1;
+		int tmpPercentage = 0;
+	
+		
+		type::labelObjectType3D::Pointer labelObject = labelMap->GetNthLabelObject(i);
+
+		type::labelObjectType3D::IndexType index;		
 		for (unsigned j = 0; j < size; ++j)
 		{
-			xTmp = labelMap->GetNthLabelObject(i)->GetIndex(j)[0];
-			yTmp = labelMap->GetNthLabelObject(i)->GetIndex(j)[1];
-			zTmp = labelMap->GetNthLabelObject(i)->GetIndex(j)[2];
+			
+			index = labelObject->GetIndex(j);
+			xTmp = index[0];
+			yTmp = index[1];
+			zTmp = index[2];
+			
+			//xTmp = labelMap->GetNthLabelObject(i)->GetIndex(j)[0];
+			//yTmp = labelMap->GetNthLabelObject(i)->GetIndex(j)[1];
+			//zTmp = labelMap->GetNthLabelObject(i)->GetIndex(j)[2];
 
 			xMean += xTmp;
 			yMean += yTmp;
@@ -417,16 +438,26 @@ void computeLabelMapStatistics(type::labelMapType3D::Pointer labelMap)
 			max[0] = (xTmp > max[0]) ? xTmp : max[0];
 			max[1] = (yTmp > max[1]) ? yTmp : max[1];
 			max[2] = (zTmp > max[2]) ? zTmp : max[2];
+
+
+			tmpPercentage = math::to_percentage<int>(j+1, size);
+			if(partialPitPercentage < tmpPercentage)
+			{
+				partialPitPercentage = tmpPercentage;
+				std::cout << "Partial pit "<< partialPitPercentage << "%" <<" of "<<pitPercentage<<"%"<<std::endl;
+			}
 		}
 
-		std::cout << ((std::abs(max[0] - min[0]) > std::abs(max[2] - min[2])) ? std::abs(max[0] - min[0]) : std::abs(max[2] - min[2])) << ", ";
-		std::cout << std::abs(max[1] - min[1]) << ", ";
+		outputFile << ((std::abs(max[0] - min[0]) > std::abs(max[2] - min[2])) ? std::abs(max[0] - min[0]) : std::abs(max[2] - min[2])) << ", ";
+		outputFile << std::abs(max[1] - min[1]) << ", ";
 
-		std::cout << labelMap->GetNthLabelObject(i)->Size() << ", ";
+		outputFile << labelMap->GetNthLabelObject(i)->Size() << ", ";
 
-		std::cout << "[" << xMean / size << "- " << yMean / size << "- " << zMean / size << "]" << std::endl;
+		outputFile << "[" << xMean / size << "- " << yMean / size << "- " << zMean / size << "]" << std::endl;
 
 	}
+
+	outputFile.close();
 
 	io::print("Statistics", 1);
 
