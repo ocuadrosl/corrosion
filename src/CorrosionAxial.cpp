@@ -11,6 +11,7 @@
 #include "common/InputOutput.h"
 #include "common/ImageProcessing.h"
 #include "Interface.h"
+#include "common/Utils.h"
 
 #include "itkLabelMap.h"
 
@@ -68,11 +69,13 @@ int main(int argc, const char* argv[])
 //ip::invertPixelValue<type::grayImageType3D>(segmentedImage); //by reference
 //cylindrical filter
 //ip::cylindricalFilter<type::grayImageType3D>(segmentedImage, 930); //by reference...
-//computing connected components
+	
+
+	//computing connected components
 	typedef itk::LabelObject<type::grayImageType3D::PixelType, 3> labelObjectType3D;
 	typedef itk::LabelMap<labelObjectType3D> labelMapType3D;
 
-//connected component
+	//connected component
 	std::string rgbName = interface.getOutputDir() + "/" + interface.getTestName() + "rgb.nii";
 	labelMapType3D::Pointer labelMap3D = ip::connectedComponents<type::grayImageType3D, labelMapType3D>(outputSegmentedImage, rgbName);
 
@@ -80,8 +83,10 @@ int main(int argc, const char* argv[])
 
 	
 	
-
-	//creating mesh
+	//computing connected components slice by slice
+	utils::computeStatistics2D(image3D.getImageSeries(), interface.getOutputDir() + "/" + interface.getTestName()+"MetricsBySlice.txt" );
+	
+//creating mesh
 	std::string vtkName = interface.getOutputDir() + "/" + interface.getTestName() + ".vtk";
 	type::meshTypePointer mesh = ip::extractIsoSurface(outputSegmentedImage, 1);
 	io::writeMesh(mesh, vtkName);

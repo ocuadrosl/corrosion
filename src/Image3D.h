@@ -52,6 +52,8 @@ public:
 	void setBreakPoint(int breakPoint);
 	void setReducedRadius(double radius);
 
+	std::vector<type::grayImagePointer> getImageSeries() const;
+
 private:
 	void changeCanvasSize();
 	void imageSeriesAlignment();
@@ -81,6 +83,12 @@ Image3D::Image3D() :
 {
 
 }
+
+std::vector<type::grayImagePointer> Image3D::getImageSeries() const
+{
+
+	return this->imageSeries; 
+} 
 void Image3D::setReducedRadius(double radius)
 {
 	this->reducedRadius = radius;
@@ -499,7 +507,7 @@ void Image3D::createImage3D()
 
 	segmentedImage3D = imageSeriesTo3DImage();
 
-//updating image properties
+	//updating image properties
 	type::grayImageType3D::SpacingType spacing;
 
 	spacing[0] = spacing[1] = spacing[2] = 1 / conversionFactor;

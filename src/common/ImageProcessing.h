@@ -348,9 +348,9 @@ typename labelMapType::Pointer connectedComponents(typename inputType::Pointer i
 	rgbFilter->SetInput(connected->GetOutput());
 
 	if(outputFileName!="")
-
-	io::writeImage < rgbImageType > (rgbFilter->GetOutput(), outputFileName);
-
+	{	
+		io::writeImage < rgbImageType > (rgbFilter->GetOutput(), outputFileName);
+	}
 	io::print("Connected Components", 1);
 
 	return labelImageToLabelMapFilter->GetOutput();
@@ -372,6 +372,9 @@ void invertPixelValue(typename imageType::Pointer inputImage)
 	io::print("Inverting value", 1);
 
 }
+
+
+
 
 void computeLabelMapStatistics(type::labelMapType3D::Pointer labelMap, std::string outputFileName)
 {
