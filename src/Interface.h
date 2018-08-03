@@ -27,6 +27,9 @@ public:
 	std::string getTestName() const;
 	int getBreakPoint() const;
 	double getReducedRadius() const;
+	bool getStatistics3D() const;
+	bool getStatistics2D() const;
+
 
 	void readInputFile();
 	void readInputFileOld();
@@ -42,6 +45,8 @@ private:
 	std::vector<double> abradedHeightByLayer;
 	int breakPoint;
 	double reducedRadius;
+	bool statistics3D;
+	bool statistics2D;
 
 	void cases(std::string tagName, std::string value);
 
@@ -58,6 +63,8 @@ Interface::Interface(std::string inputFileName)
 	this->testName = "corrosion";
 	this->breakPoint = -1; //no break point
 	this->reducedRadius = -1; // no reduced radio
+	this->statistics3D = 1;
+	this->statistics2D = 1;	
 
 }
 
@@ -106,6 +113,14 @@ void Interface::cases(std::string tagName, std::string value)
 	{
 		this->reducedRadius = std::stoi(value);
 
+	}
+	if(tagName == "statistics3D")
+	{
+		this->statistics3D = std::stoi(value);
+	}
+	if(tagName == "statistics2D")
+	{
+		this->statistics2D = std::stoi(value);
 	}
 
 }
@@ -235,5 +250,21 @@ int Interface::getBreakPoint() const
 {
 	return this->breakPoint;
 }
+
+bool Interface::getStatistics3D() const
+{
+	return this->statistics3D;
+}
+
+bool Interface::getStatistics2D() const
+{
+	return this->statistics2D;
+}
+
+
+
+
+
+
 
 #endif /* SRC_INTERFACE_H_ */

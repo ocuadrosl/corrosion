@@ -394,7 +394,7 @@ void computeLabelMapStatistics(type::labelMapType3D::Pointer labelMap, std::stri
 
 		int  pitPercentage = math::to_percentage<int>(i,  labelMap->GetNumberOfLabelObjects());
 
-		std::cout << "Computing metrics " << pitPercentage << "%" << std::endl<<std::flush;
+		std::cout << "Computing metrics " << pitPercentage << "%" << std::endl; //<<std::flush;
 
 		unsigned size = labelMap->GetNthLabelObject(i)->Size();
 
