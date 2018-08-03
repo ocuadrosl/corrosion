@@ -6,6 +6,7 @@ set (CMAKE_CXX_STANDARD 17)
 find_package(ITK REQUIRED)
 include(${ITK_USE_FILE})
 
+#not now
 #find_package(VTK REQUIRED)
 #include(${VTK_USE_FILE})
 
