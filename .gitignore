@@ -10,3 +10,5 @@ utils/
 .project
 /.settings/
 .settings/
+/CMakeLists.txt/
+CMakeLists.txt/
