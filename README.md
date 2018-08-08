@@ -36,8 +36,8 @@ $ make
 Execute
 
 ```
-$ cd corrosion/build
-$ ./buildCorrosionAxial <inputFilePath>
+$ cd corrosion
+$ ./build/buildCorrosionAxial <inputFilePath>
 ```
 
 
