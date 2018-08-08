@@ -37,7 +37,7 @@ Execute
 
 ```
 $ cd corrosion
-$ ./build/buildCorrosionAxial <inputFilePath>
+$ ./build/CorrosionAxial <inputFilePath>
 ```
 
 
