@@ -27,7 +27,7 @@ void computeStatistics2D( const  std::vector<type::grayImagePointer> & imageSeri
 		//compute statistics here		
 		outputFile << "Number of Objects " << labelMap->GetNumberOfLabelObjects() << std::endl;
          
-		outputFile << "ID, " << "Max Diameter, " << "Volume, " << "Position" << std::endl;
+		outputFile << "ID, " << "Max Diameter, " << "Area, " << "Position" << std::endl;
 
 
 		for (unsigned i = 1; i < labelMap->GetNumberOfLabelObjects(); ++i)

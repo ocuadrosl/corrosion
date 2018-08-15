@@ -190,6 +190,7 @@ void Interface::readInputFile()
 					while (inputFile >> value)
 					{
 						abradedHeightByLayer.push_back(std::stod(value));
+						std::cout<<value<<std::endl;
 
 					}
 				}
