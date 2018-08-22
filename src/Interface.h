@@ -29,6 +29,7 @@ public:
 	double getReducedRadius() const;
 	bool getStatistics3D() const;
 	bool getStatistics2D() const;
+	bool getStatistics2DInput() const;
 
 
 	void readInputFile();
@@ -47,6 +48,7 @@ private:
 	double reducedRadius;
 	bool statistics3D;
 	bool statistics2D;
+	bool statistics2DInput;
 
 	void cases(std::string tagName, std::string value);
 
@@ -64,7 +66,8 @@ Interface::Interface(std::string inputFileName)
 	this->breakPoint = -1; //no break point
 	this->reducedRadius = -1; // no reduced radio
 	this->statistics3D = 1;
-	this->statistics2D = 1;	
+	this->statistics2D = 1;
+	this->statistics2DInput = 1;	
 
 }
 
@@ -121,6 +124,10 @@ void Interface::cases(std::string tagName, std::string value)
 	if(tagName == "statistics2D")
 	{
 		this->statistics2D = std::stoi(value);
+	}
+	if (tagName == "statistics2DInput")
+	{
+		this->statistics2DInput = std::stoi(value);
 	}
 
 }
@@ -262,6 +269,11 @@ bool Interface::getStatistics2D() const
 	return this->statistics2D;
 }
 
+bool Interface::getStatistics2DInput() const
+{
+
+	return this->statistics2DInput;
+}
 
 
 

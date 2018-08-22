@@ -91,6 +91,11 @@ int main(int argc, const char* argv[])
 	
 	}
 	
+	if(interface.getStatistics2DInput())
+	{
+		utils::computeStatistics2D(image3D.getInputImageSeries(), interface.getOutputDir()+ "/"+interface.getTestName()+"MeticsBySliceInput.txt");
+	}
+	
 
 	//creating mesh
 	std::string vtkName = interface.getOutputDir() + "/" + interface.getTestName() + ".vtk";

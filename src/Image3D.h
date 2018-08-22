@@ -53,6 +53,7 @@ public:
 	void setReducedRadius(double radius);
 
 	std::vector<type::grayImagePointer> getImageSeries() const;
+	std::vector<type::grayImagePointer> getInputImageSeries() const;
 
 private:
 	void changeCanvasSize();
@@ -76,11 +77,21 @@ private:
 	double reducedRadius; //in pixels
 
 	std::vector<double> abradedHeightByLayer; //it contains the abraded height by sample
+	std::vector<type::grayImagePointer> inputImageSeries; // this contains the input image series, it means no interpolation
 
 };
 Image3D::Image3D() :
 		fixedImageId(-1), abradedHeight(0.0), abradedMean(0.0), conversionFactor(0), breakPoint(-10), reducedRadius(-1)
 {
+
+}
+
+
+std::vector<type::grayImagePointer> Image3D::getInputImageSeries() const
+{
+	
+
+	return  (inputImageSeries.size() > 0) ? this->inputImageSeries : this->imageSeries;
 
 }
 
@@ -358,6 +369,8 @@ void Image3D::fillAbradedSamplesByInterpolation()
 		}
 
 	}
+
+	inputImageSeries = imageSeries;	
 
 	imageSeries = newImageSeries;
 
