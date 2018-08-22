@@ -67,6 +67,7 @@ breakPoint -1
 reducedRadius -1
 statistics3D 1
 statistics2D 1
+statistics2DInput 1
 abradedHeightByLayer
 ```
 Symbols meaning
@@ -88,6 +89,7 @@ breakPoint 18
 reducedRadius 890
 statistics3D 0
 statistics2D 0
+statistics2DInput 0
 abradedHeightByLayer
 0.000
 ...
