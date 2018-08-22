@@ -52,7 +52,7 @@ Requirements
 
 2 CONFIGURATION FILE
 
-Defaul values
+Default values
 
 
 
