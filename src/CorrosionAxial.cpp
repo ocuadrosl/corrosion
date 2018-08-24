@@ -1,4 +1,4 @@
-/a/============================================================================
+//============================================================================
 // Name        : CorrosionAxial.cpp
 // Author      : Oscar
 // Version     :
@@ -91,7 +91,8 @@ int main(int argc, const char* argv[])
 	
 	}
 	
-	if(interface.getStatistics2DInput()	{
+	if(interface.getStatistics2DInput())	
+	{
 		utils::computeStatistics2D(image3D.getInputImageSeries(), interface.getOutputDir()+ "/"+interface.getTestName()+"MeticsBySliceInput.txt");
 	}
 	
