@@ -26,7 +26,7 @@ int main(int argc, const char* argv[])
 	else
 	{
 		//inputFile = "input/electrode5_Imagens_tratadas/electrode5Tratadas.txt";
-		std::cerr<<"Configuration file is required";
+		std::cerr<<"Configuration file is required"<<std::endl;
 		return 0; 
 	}
 
