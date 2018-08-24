@@ -1,6 +1,6 @@
 //============================================================================
 // Name        : CorrosionAxial.cpp
-// Author      : Oscar
+// Author      : Oscar Cuadros Linares
 // Version     :
 // Copyright   : 
 // Description : 
@@ -25,7 +25,9 @@ int main(int argc, const char* argv[])
 	}
 	else
 	{
-		inputFile = "input/electrode5_Imagens_tratadas/electrode5Tratadas.txt";
+		//inputFile = "input/electrode5_Imagens_tratadas/electrode5Tratadas.txt";
+		std::cerr<<"Configuration file is required";
+		return 0; 
 	}
 
 	Interface interface(inputFile);
@@ -79,7 +81,7 @@ int main(int argc, const char* argv[])
 		std::string rgbName = interface.getOutputDir() + "/" + interface.getTestName() + "rgb.nii";
 		labelMapType3D::Pointer labelMap3D = ip::connectedComponents<type::grayImageType3D, labelMapType3D>(outputSegmentedImage, rgbName);
 
-		ip::computeLabelMapStatistics(labelMap3D, interface.getOutputDir() + "/" + interface.getTestName()+"Metrics.txt" );
+		ip::computeLabelMapStatistics(labelMap3D, interface.getOutputDir() + "/" + interface.getTestName()+"Metrics.csv" );
 	
 	}
 	
@@ -87,13 +89,13 @@ int main(int argc, const char* argv[])
 	{
 
 		//computing connected components slice by slice
-		utils::computeStatistics2D(image3D.getImageSeries(), interface.getOutputDir() + "/" + interface.getTestName()+"MetricsBySlice.txt" );
+		utils::computeStatistics2D(image3D.getImageSeries(), interface.getOutputDir() + "/" + interface.getTestName()+"MetricsBySlice.csv" );
 	
 	}
 	
 	if(interface.getStatistics2DInput())	
 	{
-		utils::computeStatistics2D(image3D.getInputImageSeries(), interface.getOutputDir()+ "/"+interface.getTestName()+"MeticsBySliceInput.txt");
+		utils::computeStatistics2D(image3D.getInputImageSeries(), interface.getOutputDir()+ "/"+interface.getTestName()+"MetricsBySliceInput.csv");
 	}
 	
 

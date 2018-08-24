@@ -38,7 +38,7 @@ void computeStatistics2D( const  std::vector<type::grayImagePointer> & imageSeri
  
                  	int  pitPercentage = math::to_percentage<int>(i,  labelMap->GetNumberOfLabelObjects());
  
-                 	std::cout << "Computing metrics " << pitPercentage << "%" << std::endl<<std::flush;
+                 	std::cout << "Computing metrics by slice " << pitPercentage << "%" << std::endl<<std::flush;
  
                  	unsigned size = labelMap->GetNthLabelObject(i)->Size();
  
@@ -99,6 +99,7 @@ void computeStatistics2D( const  std::vector<type::grayImagePointer> & imageSeri
 
 
   		}
+		std::cout<<std::endl;
 
 
 

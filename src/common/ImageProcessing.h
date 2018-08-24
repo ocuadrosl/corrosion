@@ -351,6 +351,7 @@ typename labelMapType::Pointer connectedComponents(typename inputType::Pointer i
 	{	
 		io::writeImage < rgbImageType > (rgbFilter->GetOutput(), outputFileName);
 	}
+	
 	io::print("Connected Components", 1);
 
 	return labelImageToLabelMapFilter->GetOutput();
@@ -386,11 +387,10 @@ void computeLabelMapStatistics(type::labelMapType3D::Pointer labelMap, std::stri
 
 	outputFile << "ID, " << "Max Diameter, " << "Max Height, " << "Volume, " << "Position" << std::endl;
 
-	for (unsigned i = 1; i < labelMap->GetNumberOfLabelObjects(); ++i)
+	for (unsigned i = 0; i < labelMap->GetNumberOfLabelObjects(); ++i)
 	{
 
-		//std::cout << i << ", "<<std::flush; //Pit id
-		outputFile<< i << ", ";
+		outputFile<< i+1 << ", ";
 
 		int  pitPercentage = math::to_percentage<int>(i,  labelMap->GetNumberOfLabelObjects());
 
@@ -463,7 +463,7 @@ void computeLabelMapStatistics(type::labelMapType3D::Pointer labelMap, std::stri
 
 	outputFile.close();
 
-	io::print("Statistics", 1);
+	io::print("Statistics 3D", 1);
 
 }
 
