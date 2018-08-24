@@ -14,7 +14,8 @@ void computeStatistics2D( const  std::vector<type::grayImagePointer> & imageSeri
 {
 
 	std::ofstream outputFile(outputFileName);
- 				
+ 	
+			
 	typedef itk::LabelObject<type::grayImageType::PixelType, 2> labelObjectType;
         typedef itk::LabelMap<labelObjectType> labelMapType;
    
@@ -25,7 +26,7 @@ void computeStatistics2D( const  std::vector<type::grayImagePointer> & imageSeri
 		 labelMap = ip::connectedComponents<type::grayImageType, labelMapType>(imageSeries[img]);
 
 		//compute statistics here		
-		outputFile << "Number of Objects " << labelMap->GetNumberOfLabelObjects() << std::endl;
+		outputFile << "Slice "<< img+1 <<" Number of Objects " << labelMap->GetNumberOfLabelObjects() << std::endl;
          
 		outputFile << "ID, " << "Max Diameter, " << "Area, " << "Position" << std::endl;
 
