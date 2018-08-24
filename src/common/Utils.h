@@ -26,15 +26,15 @@ void computeStatistics2D( const  std::vector<type::grayImagePointer> & imageSeri
 		 labelMap = ip::connectedComponents<type::grayImageType, labelMapType>(imageSeries[img]);
 
 		//compute statistics here		
-		outputFile << "Slice "<< img+1 <<" Number of Objects " << labelMap->GetNumberOfLabelObjects() << std::endl;
+		outputFile << "SLICE "<< img+1 <<": Number of Objects " << labelMap->GetNumberOfLabelObjects() << std::endl;
          
-		outputFile << "ID, " << "Max Diameter, " << "Area, " << "Position" << std::endl;
+		outputFile << "Id, " << "Max Diameter, " << "Area, " << "Position" << std::endl;
 
 
-		for (unsigned i = 1; i < labelMap->GetNumberOfLabelObjects(); ++i)
+		for (unsigned i = 0; i < labelMap->GetNumberOfLabelObjects(); ++i)
          	{
  			//id
-                	outputFile<< i << ", ";
+                	outputFile<< i+1 << ", ";
  
                  	int  pitPercentage = math::to_percentage<int>(i,  labelMap->GetNumberOfLabelObjects());
  
