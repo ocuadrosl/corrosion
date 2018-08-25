@@ -44,7 +44,7 @@ $ ./build/CorrosionAxial <inputFilePath>
 Requirements
 
 ```
-1. C++17
+1. C++14
 2. Insight Segmentation and Registration Toolkit (ITK) 
 3. Linux kernel 4.13 or superior
 
