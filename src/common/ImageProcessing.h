@@ -554,8 +554,10 @@ void computeLabelMapStatistics(type::labelMapType3D::Pointer labelMap, std::stri
 
 }
 
-void computeLabelMapStatisticsThread(const type::labelMapType3D::Pointer& labelMap, std::vector<std::string>& metrics, unsigned lowerIndex, unsigned upperIndex)
+void computeLabelMapStatisticsThread(const type::labelMapType3D::Pointer& labelMap, std::vector<std::string>& metrics, unsigned lowerIndex, unsigned upperIndex, unsigned threadNumber)
 {
+
+	std::cout << "Thread " << threadNumber << ": start" << std::endl;
 
 	std::stringstream lineMetric;
 	for (unsigned i = lowerIndex; i < upperIndex; ++i)
@@ -626,6 +628,8 @@ void computeLabelMapStatisticsThread(const type::labelMapType3D::Pointer& labelM
 
 	}
 
+	std::cout << "Thread " << threadNumber << ": end" << std::endl;
+
 }
 
 void computeLabelMapStatisticsMuiltiThread(type::labelMapType3D::Pointer labelMap, std::string outputFileName)
@@ -633,7 +637,7 @@ void computeLabelMapStatisticsMuiltiThread(type::labelMapType3D::Pointer labelMa
 
 	std::vector<std::string> metrics(labelMap->GetNumberOfLabelObjects());
 
-	const unsigned numberOfThreads = 8;
+	const unsigned numberOfThreads = 16;
 	std::thread threads[numberOfThreads];
 
 	unsigned step = metrics.size() / numberOfThreads;
@@ -644,7 +648,7 @@ void computeLabelMapStatisticsMuiltiThread(type::labelMapType3D::Pointer labelMa
 	unsigned lowerIndex = 0;
 	unsigned partialSize = 0;
 
-	std::cout<<"metrics parallel"<<std::endl;
+	std::cout << "metrics parallel" << std::endl;
 
 	for (unsigned i = 0; i < numberOfThreads; ++i)
 	{
@@ -655,30 +659,37 @@ void computeLabelMapStatisticsMuiltiThread(type::labelMapType3D::Pointer labelMa
 			pivot += step;
 			partialSize = pivot;
 			incrementControl -= step;
-			threads[i] = std::thread(computeLabelMapStatisticsThread, std::cref(labelMap), std::ref(metrics), lowerIndex, partialSize);
+			threads[i] = std::thread(computeLabelMapStatisticsThread, std::cref(labelMap), std::ref(metrics), lowerIndex, partialSize, i);
 
 		}
 		else
 		{
 			lowerIndex = pivot;
 			partialSize = metrics.size();
-			threads[i] = std::thread(computeLabelMapStatisticsThread, std::cref(labelMap), std::ref(metrics), lowerIndex, partialSize);
+			threads[i] = std::thread(computeLabelMapStatisticsThread, std::cref(labelMap), std::ref(metrics), lowerIndex, partialSize, i);
 		}
 
 	}
-	for (int i = 0; i < numberOfThreads; ++i)
+	for (unsigned i = 0; i < numberOfThreads; ++i)
 	{
 
 		threads[i].join();
 
 	}
 
+	std::ofstream outputFile(outputFileName);
+
+	outputFile << "Number of Objects " << labelMap->GetNumberOfLabelObjects() << std::endl;
+
+	outputFile << "ID, " << "Max Diameter, " << "Max Height, " << "Volume, " << "Position" << std::endl;
 	for (unsigned i = 0; i < metrics.size(); ++i)
 	{
 
 		std::cout << metrics[i] << std::endl;
-
+		outputFile << metrics[i];
 	}
+
+	io::print("Metrics 3D", true);
 
 }
 
