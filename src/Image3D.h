@@ -438,7 +438,7 @@ void Image3D::fillAbradedSamplesByInterpolationAverage()
 void Image3D::closeBorders(double radious)
 {
 
-	//moments calculator types declaration
+	//moments calculator typedefs
 	using momentsCalculatorType = itk::ImageMomentsCalculator<type::grayImageType>;
 	momentsCalculatorType::Pointer momentsCalculator = momentsCalculatorType::New();
 

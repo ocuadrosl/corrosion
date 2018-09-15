@@ -613,7 +613,7 @@ void computeLabelMapStatisticsThread(const type::labelMapType3D::Pointer& labelM
 			if (partialPitPercentage < tmpPercentage)
 			{
 				partialPitPercentage = tmpPercentage;
-				//std::cout << "Partial pit " << partialPitPercentage << "%" << " of " << pitPercentage << "%" << std::endl;
+				std::cout <<"Thread "<< threadNumber<< ": Partial pit " << partialPitPercentage << "%" << " of " << pitPercentage << "%" << std::endl;
 			}
 		}
 
@@ -648,7 +648,7 @@ void computeLabelMapStatisticsMuiltiThread(type::labelMapType3D::Pointer labelMa
 	unsigned lowerIndex = 0;
 	unsigned partialSize = 0;
 
-	std::cout << "metrics parallel" << std::endl;
+	std::cout << "Computing Metrics using: " << numberOfThreads<< " threads"<<std::endl;
 
 	for (unsigned i = 0; i < numberOfThreads; ++i)
 	{
