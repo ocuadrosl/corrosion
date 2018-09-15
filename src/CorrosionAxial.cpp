@@ -78,9 +78,9 @@ int main(int argc, const char* argv[])
 
 		//connected component
 		std::string rgbName = interface.getOutputDir() + "/" + interface.getTestName() + "rgb.nii";
-		labelMapType3D::Pointer labelMap3D = ip::connectedComponents<type::grayImageType3D, labelMapType3D>(outputSegmentedImage, rgbName);
+		typename labelMapType3D::Pointer labelMap3D = ip::connectedComponents<type::grayImageType3D, labelMapType3D>(outputSegmentedImage, rgbName);
 
-		ip::computeLabelMapStatistics(labelMap3D, interface.getOutputDir() + "/" + interface.getTestName()+"Metrics.csv" );
+		ip::computeLabelMapStatisticsMuiltiThread(labelMap3D, interface.getOutputDir() + "/" + interface.getTestName()+"Metrics.csv" );
 	
 	}
 	

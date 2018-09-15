@@ -38,6 +38,8 @@
 #include "itkYenThresholdImageFilter.h"
 #include "itkBinaryThresholdImageFilter.h"
 
+#include <thread>
+
 namespace ip
 {
 /*
@@ -491,7 +493,7 @@ void computeLabelMapStatistics(type::labelMapType3D::Pointer labelMap, std::stri
 		int yMean = 0;
 		int zMean = 0;
 
-		std::vector<int> min(3, 1000);
+		std::vector<int> min(3, 1000000);
 		std::vector<int> max(3, 0);
 
 		int xTmp;
@@ -549,6 +551,134 @@ void computeLabelMapStatistics(type::labelMapType3D::Pointer labelMap, std::stri
 	outputFile.close();
 
 	io::print("Statistics 3D", 1);
+
+}
+
+void computeLabelMapStatisticsThread(const type::labelMapType3D::Pointer& labelMap, std::vector<std::string>& metrics, unsigned lowerIndex, unsigned upperIndex)
+{
+
+	std::stringstream lineMetric;
+	for (unsigned i = lowerIndex; i < upperIndex; ++i)
+	{
+		lineMetric << i + 1 << ", ";
+		int pitPercentage = math::to_percentage<int>(i, labelMap->GetNumberOfLabelObjects());
+
+		//std::cout << "Computing metrics " << pitPercentage << "%" << std::endl; //<<std::flush;
+
+		unsigned size = labelMap->GetNthLabelObject(i)->Size();
+
+		//computing centroid and bounding box
+
+		int xMean = 0;
+		int yMean = 0;
+		int zMean = 0;
+
+		std::vector<int> min(3, 1000000);
+		std::vector<int> max(3, 0);
+
+		int xTmp;
+		int yTmp;
+		int zTmp;
+
+		int partialPitPercentage = -1;
+		int tmpPercentage = 0;
+
+		type::labelObjectType3D::Pointer labelObject = labelMap->GetNthLabelObject(i);
+
+		type::labelObjectType3D::IndexType index;
+
+		for (unsigned j = 0; j < size; ++j)
+		{
+
+			index = labelObject->GetIndex(j);
+			xTmp = index[0];
+			yTmp = index[1];
+			zTmp = index[2];
+
+			xMean += xTmp;
+			yMean += yTmp;
+			zMean += zTmp;
+
+			min[0] = (xTmp < min[0]) ? xTmp : min[0];
+			min[1] = (yTmp < min[1]) ? yTmp : min[1];
+			min[2] = (zTmp < min[2]) ? zTmp : min[2];
+
+			max[0] = (xTmp > max[0]) ? xTmp : max[0];
+			max[1] = (yTmp > max[1]) ? yTmp : max[1];
+			max[2] = (zTmp > max[2]) ? zTmp : max[2];
+
+			tmpPercentage = math::to_percentage<int>(j + 1, size);
+			if (partialPitPercentage < tmpPercentage)
+			{
+				partialPitPercentage = tmpPercentage;
+				//std::cout << "Partial pit " << partialPitPercentage << "%" << " of " << pitPercentage << "%" << std::endl;
+			}
+		}
+
+		lineMetric << ((std::abs(max[0] - min[0]) > std::abs(max[2] - min[2])) ? std::abs(max[0] - min[0]) : std::abs(max[2] - min[2])) << ", ";
+		lineMetric << std::abs(max[1] - min[1]) << ", ";
+
+		lineMetric << labelMap->GetNthLabelObject(i)->Size() << ", ";
+
+		lineMetric << "[" << xMean / size << "- " << yMean / size << "- " << zMean / size << "]" << std::endl;
+
+		metrics[i] = lineMetric.str();
+
+	}
+
+}
+
+void computeLabelMapStatisticsMuiltiThread(type::labelMapType3D::Pointer labelMap, std::string outputFileName)
+{
+
+	std::vector<std::string> metrics(labelMap->GetNumberOfLabelObjects());
+
+	const unsigned numberOfThreads = 8;
+	std::thread threads[numberOfThreads];
+
+	unsigned step = metrics.size() / numberOfThreads;
+
+	//some auxiliary variables
+	int incrementControl = metrics.size();
+	unsigned pivot = 0;
+	unsigned lowerIndex = 0;
+	unsigned partialSize = 0;
+
+	std::cout<<"metrics parallel"<<std::endl;
+
+	for (unsigned i = 0; i < numberOfThreads; ++i)
+	{
+
+		if (step < incrementControl)
+		{
+			lowerIndex = pivot;
+			pivot += step;
+			partialSize = pivot;
+			incrementControl -= step;
+			threads[i] = std::thread(computeLabelMapStatisticsThread, std::cref(labelMap), std::ref(metrics), lowerIndex, partialSize);
+
+		}
+		else
+		{
+			lowerIndex = pivot;
+			partialSize = metrics.size();
+			threads[i] = std::thread(computeLabelMapStatisticsThread, std::cref(labelMap), std::ref(metrics), lowerIndex, partialSize);
+		}
+
+	}
+	for (int i = 0; i < numberOfThreads; ++i)
+	{
+
+		threads[i].join();
+
+	}
+
+	for (unsigned i = 0; i < metrics.size(); ++i)
+	{
+
+		std::cout << metrics[i] << std::endl;
+
+	}
 
 }
 

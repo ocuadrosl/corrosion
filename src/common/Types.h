@@ -45,7 +45,8 @@ typedef itk::Mesh<double, 3> meshType;
 typedef meshType::Pointer meshTypePointer;
 
 typedef itk::LabelObject<grayImageType::PixelType, 3> labelObjectType3D;
-typedef itk::LabelMap<labelObjectType3D> labelMapType3D;
+//typedef itk::LabelMap<labelObjectType3D> labelMapType3D;
+using labelMapType3D = itk::LabelMap<labelObjectType3D>;
 
 }
 
