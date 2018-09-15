@@ -53,7 +53,7 @@ int main(int argc, const char* argv[])
 
 	//creating and writing mesh
 	std::string vtkName = interface.getOutputDir() + "/" + interface.getTestName() + ".vtk";
-	type::meshTypePointer mesh = ip::extractIsoSurface(outputSegmentedImage, 1);
+	type::meshTypePointer mesh = ip::extractIsoSurface(outputSegmentedImage, 0);
 	io::writeMesh(mesh, vtkName);
 
 //reading volume tmp
