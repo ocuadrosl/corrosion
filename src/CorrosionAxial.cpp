@@ -52,9 +52,9 @@ int main(int argc, const char* argv[])
 	io::writeImage<type::grayImageType3D>(outputSegmentedImage, interface.getOutputDir() + "/segmented" + interface.getTestName() + ".nii");
 
 	//creating and writing mesh
-	std::string vtkName = interface.getOutputDir() + "/" + interface.getTestName() + ".vtk";
-	type::meshTypePointer mesh = ip::extractIsoSurface(outputSegmentedImage, 0);
-	io::writeMesh(mesh, vtkName);
+	//std::string vtkName = interface.getOutputDir() + "/" + interface.getTestName() + ".vtk";
+	//type::meshTypePointer mesh = ip::extractIsoSurface(outputSegmentedImage, 0);
+	//io::writeMesh(mesh, vtkName);
 
 //reading volume tmp
 //type::grayImagePointer3D outputImage = io::readImage<type::grayImageType3D>("output/volume.nii");
