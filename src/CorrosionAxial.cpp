@@ -12,7 +12,6 @@
 #include "common/ImageProcessing.h"
 #include "Interface.h"
 #include "common/Utils.h"
-
 #include "itkLabelMap.h"
 
 int main(int argc, const char* argv[])

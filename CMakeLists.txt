@@ -10,10 +10,10 @@ include(${ITK_USE_FILE})
 #find_package(VTK REQUIRED)
 #include(${VTK_USE_FILE})
 
-include_directories("../src/")
+include_directories("src/")
 
 
-add_executable(CorrosionAxial "../src/CorrosionAxial.cpp")
+add_executable(CorrosionAxial "src/CorrosionAxial.cpp")
 
 target_link_libraries(CorrosionAxial  ${ITK_LIBRARIES} )#  ${VTK_LIBRARIES})
 

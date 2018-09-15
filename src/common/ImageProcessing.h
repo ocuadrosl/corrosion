@@ -24,6 +24,20 @@
 #include "itkLabelImageToLabelMapFilter.h"
 #include "itkLabelToRGBImageFilter.h"
 
+#include "itkKittlerIllingworthThresholdImageFilter.h"
+#include "itkHistogramThresholdImageFilter.h"
+#include "itkHuangThresholdImageFilter.h"
+#include "itkLiThresholdImageFilter.h"
+#include "itkIntermodesThresholdImageFilter.h"
+#include "itkIsoDataThresholdImageFilter.h"
+#include "itkMaximumEntropyThresholdImageFilter.h"
+#include "itkMomentsThresholdImageFilter.h"
+#include "itkRenyiEntropyThresholdImageFilter.h"
+#include "itkShanbhagThresholdImageFilter.h"
+#include "itkTriangleThresholdImageFilter.h"
+#include "itkYenThresholdImageFilter.h"
+#include "itkBinaryThresholdImageFilter.h"
+
 namespace ip
 {
 /*
@@ -188,9 +202,9 @@ typename imageType::Pointer createImageByInterpolation(typename imageType::Point
 
 	outputImage->Allocate();
 
-	itk::ImageRegionIterator<imageType> it1(image1, outputImage->GetLargestPossibleRegion());
-	itk::ImageRegionIterator<imageType> it2(image2, outputImage->GetLargestPossibleRegion());
-	itk::ImageRegionIterator<imageType> itOut(outputImage, outputImage->GetLargestPossibleRegion());
+	itk::ImageRegionIterator < imageType > it1(image1, outputImage->GetLargestPossibleRegion());
+	itk::ImageRegionIterator < imageType > it2(image2, outputImage->GetLargestPossibleRegion());
+	itk::ImageRegionIterator < imageType > itOut(outputImage, outputImage->GetLargestPossibleRegion());
 
 	it1.GoToBegin();
 	it2.GoToBegin();
@@ -204,6 +218,83 @@ typename imageType::Pointer createImageByInterpolation(typename imageType::Point
 	}
 
 	return outputImage;
+
+}
+
+template<typename imageType>
+typename imageType::Pointer histogramThreshold(typename imageType::Pointer inputImage, const std::string& algorithmName = "otsu", unsigned bins = 100, unsigned insideValue = 255,
+		unsigned outsideValue = 0)
+{
+
+	typename itk::HistogramThresholdImageFilter<imageType, imageType>::Pointer filter;
+
+	if (algorithmName == "otsu")
+	{
+		filter = itk::OtsuThresholdImageFilter<imageType, imageType>::New();
+
+	}
+	if (algorithmName == "huang")
+	{
+		filter = itk::HuangThresholdImageFilter<imageType, imageType>::New();
+
+	}
+	if (algorithmName == "intermodes")
+	{
+		filter = itk::IntermodesThresholdImageFilter<imageType, imageType>::New();
+
+	}
+
+	if (algorithmName == "isoData")
+	{
+		filter = itk::IsoDataThresholdImageFilter<imageType, imageType>::New();
+
+	}
+	if (algorithmName == "li")
+	{
+		filter = itk::LiThresholdImageFilter<imageType, imageType>::New();
+
+	}
+	if (algorithmName == "maximumEntropy")
+	{
+		filter = itk::MaximumEntropyThresholdImageFilter<imageType, imageType>::New();
+
+	}
+	if (algorithmName == "moments")
+	{
+		filter = itk::MomentsThresholdImageFilter<imageType, imageType>::New();
+
+	}
+	if (algorithmName == "renyi")
+	{
+		filter = itk::RenyiEntropyThresholdImageFilter<imageType, imageType>::New();
+
+	}
+	if (algorithmName == "shanbhag")
+	{
+		filter = itk::ShanbhagThresholdImageFilter<imageType, imageType>::New();
+
+	}
+	if (algorithmName == "triangle")
+	{
+		filter = itk::TriangleThresholdImageFilter<imageType, imageType>::New();
+
+	}
+	if (algorithmName == "yen")
+	{
+		filter = itk::YenThresholdImageFilter<imageType, imageType>::New();
+
+	}
+
+	filter->SetInput(inputImage);
+
+	filter->SetInsideValue(insideValue); //255
+	filter->SetOutsideValue(outsideValue); //0
+
+	filter->SetNumberOfHistogramBins(bins);
+
+	filter->Update();
+
+	return filter->GetOutput();
 
 }
 
@@ -297,7 +388,7 @@ void cylindricalFilter(typename imageType::Pointer inputImage, double radious)
 
 	itk::CylinderSpatialObject::Pointer cylinder = createCylinderObject<imageType>(inputImage, radious, 300);
 
-	itk::ImageRegionIterator<imageType> it(inputImage, inputImage->GetLargestPossibleRegion());
+	itk::ImageRegionIterator < imageType > it(inputImage, inputImage->GetLargestPossibleRegion());
 
 	for (it.GoToBegin(); !it.IsAtEnd(); ++it)
 	{
@@ -324,7 +415,7 @@ void cylindricalFilter(typename imageType::Pointer inputImage, double radious)
 }
 
 template<typename inputType, typename labelMapType>
-typename labelMapType::Pointer connectedComponents(typename inputType::Pointer image, std::string outputFileName="")
+typename labelMapType::Pointer connectedComponents(typename inputType::Pointer image, std::string outputFileName = "")
 {
 
 	typedef itk::ConnectedComponentImageFilter<inputType, inputType> ConnectedComponentImageFilterType;
@@ -347,11 +438,11 @@ typename labelMapType::Pointer connectedComponents(typename inputType::Pointer i
 	typename RGBFilterType::Pointer rgbFilter = RGBFilterType::New();
 	rgbFilter->SetInput(connected->GetOutput());
 
-	if(outputFileName!="")
-	{	
+	if (outputFileName != "")
+	{
 		io::writeImage < rgbImageType > (rgbFilter->GetOutput(), outputFileName);
 	}
-	
+
 	io::print("Connected Components", 1);
 
 	return labelImageToLabelMapFilter->GetOutput();
@@ -362,7 +453,7 @@ template<typename imageType>
 void invertPixelValue(typename imageType::Pointer inputImage)
 {
 
-	itk::ImageRegionIterator<imageType> it(inputImage, inputImage->GetLargestPossibleRegion());
+	itk::ImageRegionIterator < imageType > it(inputImage, inputImage->GetLargestPossibleRegion());
 
 	for (it.GoToBegin(); !it.IsAtEnd(); ++it)
 	{
@@ -374,12 +465,8 @@ void invertPixelValue(typename imageType::Pointer inputImage)
 
 }
 
-
-
-
 void computeLabelMapStatistics(type::labelMapType3D::Pointer labelMap, std::string outputFileName)
 {
-
 
 	std::ofstream outputFile(outputFileName);
 
@@ -390,9 +477,9 @@ void computeLabelMapStatistics(type::labelMapType3D::Pointer labelMap, std::stri
 	for (unsigned i = 0; i < labelMap->GetNumberOfLabelObjects(); ++i)
 	{
 
-		outputFile<< i+1 << ", ";
+		outputFile << i + 1 << ", ";
 
-		int  pitPercentage = math::to_percentage<int>(i,  labelMap->GetNumberOfLabelObjects());
+		int pitPercentage = math::to_percentage<int>(i, labelMap->GetNumberOfLabelObjects());
 
 		std::cout << "Computing metrics " << pitPercentage << "%" << std::endl; //<<std::flush;
 
@@ -413,20 +500,19 @@ void computeLabelMapStatistics(type::labelMapType3D::Pointer labelMap, std::stri
 
 		int partialPitPercentage = -1;
 		int tmpPercentage = 0;
-	
-		
+
 		type::labelObjectType3D::Pointer labelObject = labelMap->GetNthLabelObject(i);
 
-		type::labelObjectType3D::IndexType index;		
-		
+		type::labelObjectType3D::IndexType index;
+
 		for (unsigned j = 0; j < size; ++j)
 		{
-			
+
 			index = labelObject->GetIndex(j);
 			xTmp = index[0];
 			yTmp = index[1];
 			zTmp = index[2];
-			
+
 			//xTmp = labelMap->GetNthLabelObject(i)->GetIndex(j)[0];
 			//yTmp = labelMap->GetNthLabelObject(i)->GetIndex(j)[1];
 			//zTmp = labelMap->GetNthLabelObject(i)->GetIndex(j)[2];
@@ -443,12 +529,11 @@ void computeLabelMapStatistics(type::labelMapType3D::Pointer labelMap, std::stri
 			max[1] = (yTmp > max[1]) ? yTmp : max[1];
 			max[2] = (zTmp > max[2]) ? zTmp : max[2];
 
-
-			tmpPercentage = math::to_percentage<int>(j+1, size);
-			if(partialPitPercentage < tmpPercentage)
+			tmpPercentage = math::to_percentage<int>(j + 1, size);
+			if (partialPitPercentage < tmpPercentage)
 			{
 				partialPitPercentage = tmpPercentage;
-				std::cout << "Partial pit "<< partialPitPercentage << "%" <<" of "<<pitPercentage<<"%"<<std::endl;
+				std::cout << "Partial pit " << partialPitPercentage << "%" << " of " << pitPercentage << "%" << std::endl;
 			}
 		}
 

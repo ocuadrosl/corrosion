@@ -86,20 +86,18 @@ Image3D::Image3D() :
 
 }
 
-
 std::vector<type::grayImagePointer> Image3D::getInputImageSeries() const
 {
-	
 
-	return  (inputImageSeries.size() > 0) ? this->inputImageSeries : this->imageSeries;
+	return (inputImageSeries.size() > 0) ? this->inputImageSeries : this->imageSeries;
 
 }
 
 std::vector<type::grayImagePointer> Image3D::getImageSeries() const
 {
 
-	return this->imageSeries; 
-} 
+	return this->imageSeries;
+}
 void Image3D::setReducedRadius(double radius)
 {
 	this->reducedRadius = radius;
@@ -370,7 +368,7 @@ void Image3D::fillAbradedSamplesByInterpolation()
 
 	}
 
-	inputImageSeries = imageSeries;	
+	inputImageSeries = imageSeries;
 
 	imageSeries = newImageSeries;
 
@@ -490,7 +488,8 @@ void Image3D::imageSeriesSegmentation()
 	for (unsigned i = 0; i < imageSeries.size(); ++i)
 	{
 
-		imageSeries[i] = ip::connectedThresholdFilter<type::grayImageType>(imageSeries[i], seed);
+		//imageSeries[i] = ip::connectedThresholdFilter<type::grayImageType>(imageSeries[i], seed);
+		imageSeries[i] = ip::histogramThreshold<type::grayImageType>(imageSeries[i], "triangle", 100, 0, 1);
 	}
 
 }
