@@ -52,26 +52,12 @@ int main(int argc, const char* argv[])
 	io::writeImage<type::grayImageType3D>(outputSegmentedImage, interface.getOutputDir() + "/segmented" + interface.getTestName() + ".nii");
 
 	//creating and writing mesh
-	//std::string vtkName = interface.getOutputDir() + "/" + interface.getTestName() + ".vtk";
-	//type::meshTypePointer mesh = ip::extractIsoSurface(outputSegmentedImage, 0);
-	//io::writeMesh(mesh, vtkName);
+	std::string vtkName = interface.getOutputDir() + "/" + interface.getTestName() + ".vtk";
+	type::meshTypePointer mesh = ip::extractIsoSurface(outputSegmentedImage, 0);
+	io::writeMesh(mesh, vtkName);
 
-//reading volume tmp
-//type::grayImagePointer3D outputImage = io::readImage<type::grayImageType3D>("output/volume.nii");
 
-//type::grayImagePointer3D segmentedImage = ip::otsuThreshold<type::grayImageType3D>(outputImage);
-
-//image segmentation
-	/*type::grayImageType3D::IndexType seed;
-
-	 seed[0] = 800;
-	 seed[1] = 800;
-	 seed[2] = 100;
-
-	 //type::grayImagePointer3D neighborhoodImage = ip::neighborhoodConnectedFilter<type::grayImageType3D>(outputImage, seed);
-	 type::grayImagePointer3D segmentedImage = ip::connectedThresholdFilter<type::grayImageType3D>(outputImage, seed);
-	 */
-
+	//computing metrics
 	if (interface.getStatistics3D())
 	{
 
