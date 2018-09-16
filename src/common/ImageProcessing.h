@@ -562,13 +562,18 @@ void computeLabelMapStatisticsThread(const type::labelMapType3D::Pointer& labelM
 	int pitPercentage = 0;
 	unsigned objectSize = 0;
 	unsigned numberOfObjects = labelMap->GetNumberOfLabelObjects();
+	int tmpPercentage = 0;
 	for (unsigned i = lowerIndex; i < upperIndex; ++i)
 	{
 		lineMetric << i + 1 << ", ";
 
 		//echo
-		pitPercentage = math::to_percentage<int>(static_cast<int>(i - lowerIndex), static_cast<int>(upperIndex - lowerIndex));
-		std::cout << "Metrics 3D thread " << threadNumber + 1 << ": " << pitPercentage << "%" << std::endl; //<<std::flush;
+		tmpPercentage = math::to_percentage<int>(static_cast<int>(i - lowerIndex), static_cast<int>(upperIndex - lowerIndex));
+		if (pitPercentage < tmpPercentage)
+		{
+			pitPercentage = tmpPercentage;
+			std::cout << "Metrics 3D thread " << threadNumber + 1 << ": " << pitPercentage << "%" << std::endl; //<<std::flush;
+		}
 
 		objectSize = labelMap->GetNthLabelObject(i)->Size();
 
@@ -586,7 +591,6 @@ void computeLabelMapStatisticsThread(const type::labelMapType3D::Pointer& labelM
 		int zTmp;
 
 		int partialPitPercentage = -1;
-		int tmpPercentage = 0;
 
 		type::labelObjectType3D::Pointer labelObject = labelMap->GetNthLabelObject(i);
 
