@@ -52,11 +52,10 @@ int main(int argc, const char* argv[])
 	io::writeImage<type::grayImageType3D>(outputSegmentedImage, interface.getOutputDir() + "/segmented" + interface.getTestName() + ".nii");
 
 	//creating and writing mesh
-	std::string vtkName = interface.getOutputDir() + "/" + interface.getTestName() + ".vtk";
+	/*std::string vtkName = interface.getOutputDir() + "/" + interface.getTestName() + ".vtk";
 	type::meshTypePointer mesh = ip::extractIsoSurface(outputSegmentedImage, 0);
 	io::writeMesh(mesh, vtkName);
-
-
+*/
 	//computing metrics
 	if (interface.getStatistics3D())
 	{
@@ -69,7 +68,7 @@ int main(int argc, const char* argv[])
 		std::string rgbName = interface.getOutputDir() + "/" + interface.getTestName() + "rgb.nii";
 		typename labelMapType3D::Pointer labelMap3D = ip::connectedComponents<type::grayImageType3D, labelMapType3D>(outputSegmentedImage, rgbName);
 
-		ip::computeLabelMapStatisticsMuiltiThread(labelMap3D, interface.getOutputDir() + "/" + interface.getTestName() + "Metrics.csv");
+		ip::computeLabelMapStatistics(labelMap3D, interface.getOutputDir() + "/" + interface.getTestName() + "Metrics.csv");
 
 	}
 

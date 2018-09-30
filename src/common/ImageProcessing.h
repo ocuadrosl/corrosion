@@ -476,7 +476,7 @@ void computeLabelMapStatistics(type::labelMapType3D::Pointer labelMap, std::stri
 
 	outputFile << "ID, " << "Max Diameter, " << "Max Height, " << "Volume, " << "Position" << std::endl;
 
-	for (unsigned i = 0; i < labelMap->GetNumberOfLabelObjects(); ++i)
+	for (unsigned i = 1; i < labelMap->GetNumberOfLabelObjects(); ++i)
 	{
 
 		outputFile << i + 1 << ", ";
@@ -561,8 +561,10 @@ void computeLabelMapStatisticsThread(const type::labelMapType3D::Pointer& labelM
 	std::stringstream lineMetric;
 	int pitPercentage = 0;
 	unsigned objectSize = 0;
-	unsigned numberOfObjects = labelMap->GetNumberOfLabelObjects();
+	//unsigned numberOfObjects = labelMap->GetNumberOfLabelObjects();
 	int tmpPercentage = 0;
+
+	std::cout<<"lower "<<lowerIndex<<" upper "<<upperIndex<<std::endl;
 	for (unsigned i = lowerIndex; i < upperIndex; ++i)
 	{
 		lineMetric << i + 1 << ", ";
@@ -572,7 +574,7 @@ void computeLabelMapStatisticsThread(const type::labelMapType3D::Pointer& labelM
 		if (pitPercentage < tmpPercentage)
 		{
 			pitPercentage = tmpPercentage;
-			std::cout << "Metrics 3D thread " << threadNumber + 1 << ": " << pitPercentage << "%" << std::endl; //<<std::flush;
+			//std::cout << "Metrics 3D thread " << threadNumber + 1 << ": " << pitPercentage << "%" << std::endl; //<<std::flush;
 		}
 
 		objectSize = labelMap->GetNthLabelObject(i)->Size();
@@ -627,11 +629,13 @@ void computeLabelMapStatisticsThread(const type::labelMapType3D::Pointer& labelM
 		lineMetric << ((std::abs(max[0] - min[0]) > std::abs(max[2] - min[2])) ? std::abs(max[0] - min[0]) : std::abs(max[2] - min[2])) << ", ";
 		lineMetric << std::abs(max[1] - min[1]) << ", ";
 
-		lineMetric << labelMap->GetNthLabelObject(i)->Size() << ", ";
+		//lineMetric << labelMap->GetNthLabelObject(i)->Size() << ", ";
+		lineMetric << objectSize<<", ";
 
-		lineMetric << "[" << xMean / objectSize << "- " << yMean / objectSize << "- " << zMean / objectSize << "]" << std::endl;
+		lineMetric << "[" << xMean / objectSize << "- " << yMean / objectSize << "- " << zMean / objectSize << "] thread" << threadNumber<<std::endl;
 
 		metrics[i] = lineMetric.str();
+		//std::cout<<metrics[i]<<std::endl;
 
 	}
 
@@ -644,7 +648,7 @@ void computeLabelMapStatisticsMuiltiThread(type::labelMapType3D::Pointer labelMa
 
 	std::vector<std::string> metrics(labelMap->GetNumberOfLabelObjects());
 
-	const unsigned numberOfThreads = 16;
+	const unsigned numberOfThreads = 3;
 	std::thread threads[numberOfThreads];
 
 	unsigned step = metrics.size() / numberOfThreads;
@@ -668,15 +672,23 @@ void computeLabelMapStatisticsMuiltiThread(type::labelMapType3D::Pointer labelMa
 			incrementControl -= step;
 			threads[i] = std::thread(computeLabelMapStatisticsThread, std::cref(labelMap), std::ref(metrics), lowerIndex, partialSize, i);
 
+			std::cout<<lowerIndex<<" "<<partialSize<<std::endl;
+
+
+
 		}
 		else
 		{
 			lowerIndex = pivot;
 			partialSize = metrics.size();
 			threads[i] = std::thread(computeLabelMapStatisticsThread, std::cref(labelMap), std::ref(metrics), lowerIndex, partialSize, i);
+
+			std::cout<<lowerIndex<<" last "<<partialSize<<std::endl;
 		}
 
 	}
+	
+
 	for (unsigned i = 0; i < numberOfThreads; ++i)
 	{
 
