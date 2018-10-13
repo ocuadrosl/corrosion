@@ -41,7 +41,7 @@ void computeStatistics2D(const std::vector<type::grayImagePointer> & imageSeries
 			int xMean = 0;
 			int yMean = 0;
 
-			std::vector<int> min(2, 1000);
+			std::vector<int> min(2, 10000000);
 			std::vector<int> max(2, 0);
 
 			int xTmp;

@@ -476,7 +476,7 @@ void computeLabelMapStatistics(type::labelMapType3D::Pointer labelMap, std::stri
 
 	outputFile << "ID, " << "Max Diameter, " << "Max Height, " << "Volume, " << "Position" << std::endl;
 
-	for (unsigned i = 1; i < labelMap->GetNumberOfLabelObjects(); ++i)
+	for (unsigned i = 0; i < labelMap->GetNumberOfLabelObjects(); ++i)
 	{
 
 		outputFile << i + 1 << ", ";
@@ -581,16 +581,16 @@ void computeLabelMapStatisticsThread(const type::labelMapType3D::Pointer& labelM
 
 		//computing centroid and bounding box
 
-		int xMean = 0;
-		int yMean = 0;
-		int zMean = 0;
+		long int xMean = 0;
+		long int yMean = 0;
+		long int zMean = 0;
 
 		std::vector<int> min(3, 100000000);
 		std::vector<int> max(3, 0);
 
-		int xTmp;
-		int yTmp;
-		int zTmp;
+		long int xTmp;
+		long int yTmp;
+		long int zTmp;
 
 		int partialPitPercentage = -1;
 

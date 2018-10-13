@@ -451,6 +451,7 @@ void Image3D::closeBorders(double radious)
 
 		//momentsCalculatorType::VectorType tmpCenter = momentsCalculator->GetCenterOfGravity();
 
+		//<TODO> compute it once!!!
 		type::grayImageType::IndexType center = imageSeries[i]->GetLargestPossibleRegion().GetUpperIndex();
 		center[0] /= 2;
 		center[1] /= 2;
@@ -460,9 +461,10 @@ void Image3D::closeBorders(double radious)
 		itk::ImageRegionIterator<type::grayImageType> it(imageSeries[i], imageSeries[i]->GetLargestPossibleRegion());
 		for (it.GoToBegin(); !it.IsAtEnd(); ++it)
 		{
+			//<TODO> radius not radious 
 			if (math::euclideanDistance<type::grayImageType::IndexType>(it.GetIndex(), center) < radious) //is inside
 			{
-				it.Set(it.Get() == 0 ? 1 : 0);
+				it.Set(it.Get() == 0 ? 0 : 1); // <TODO> originally 1:0
 			}
 			else
 			{
@@ -481,15 +483,22 @@ void Image3D::imageSeriesSegmentation()
 
 	type::grayImageType::IndexType seed;
 
+	
+	//seed is not needed
 	seed[0] = 800;
 	seed[1] = 800;
 	//seed[2] = 100;
 
 	for (unsigned i = 0; i < imageSeries.size(); ++i)
 	{
-
 		//imageSeries[i] = ip::connectedThresholdFilter<type::grayImageType>(imageSeries[i], seed);
-		imageSeries[i] = ip::histogramThreshold<type::grayImageType>(imageSeries[i], "triangle", 100, 0, 1);
+		imageSeries[i] = ip::histogramThreshold<type::grayImageType>(imageSeries[i], "triangle", 100, 1, 0);
+	}
+
+	//segmenting the input image series, it may be improved later...
+	for(unsigned i=0; i <  inputImageSeries.size();++i )
+	{
+		inputImageSeries[i] = ip::histogramThreshold<type::grayImageType>(inputImageSeries[i], "triangle", 100, 1, 0);
 	}
 
 }
