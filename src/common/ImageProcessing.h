@@ -581,16 +581,16 @@ void computeLabelMapStatisticsThread(const type::labelMapType3D::Pointer& labelM
 
 		//computing centroid and bounding box
 
-		long int xMean = 0;
-		long int yMean = 0;
-		long int zMean = 0;
+		long long int xMean = 0;
+		long long int yMean = 0;
+		long long int zMean = 0;
 
 		std::vector<int> min(3, 100000000);
 		std::vector<int> max(3, 0);
 
-		long int xTmp;
-		long int yTmp;
-		long int zTmp;
+		long long int xTmp;
+		long long int yTmp;
+		long long int zTmp;
 
 		int partialPitPercentage = -1;
 
@@ -598,7 +598,7 @@ void computeLabelMapStatisticsThread(const type::labelMapType3D::Pointer& labelM
 
 		type::labelObjectType3D::IndexType index;
 
-		for (unsigned j = 0; j < objectSize; ++j)
+		for (long unsigned j = 0; j < objectSize; ++j)
 		{
 
 			index = labelObject->GetIndex(j);
