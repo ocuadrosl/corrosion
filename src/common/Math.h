@@ -61,5 +61,12 @@ inline double euclideanDistance(type const& p1, type const& p2, unsigned size = 
 
 }
 
+inline double timeAverage(double value, int time, double AvgPrev)
+{
+
+	return (((time - 1) / time) * AvgPrev) + ((1 / time) * value);
+
+}
+
 }
 #endif /* SRC_COMMON_MATH_H_ */

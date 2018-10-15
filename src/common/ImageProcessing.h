@@ -489,9 +489,9 @@ void computeLabelMapStatistics(type::labelMapType3D::Pointer labelMap, std::stri
 
 		//computing centroid and bounding box
 
-		int xMean = 0;
-		int yMean = 0;
-		int zMean = 0;
+		double xMean = 0;
+		double yMean = 0;
+		double zMean = 0;
 
 		std::vector<int> min(3, 1000000);
 		std::vector<int> max(3, 0);
@@ -519,9 +519,13 @@ void computeLabelMapStatistics(type::labelMapType3D::Pointer labelMap, std::stri
 			//yTmp = labelMap->GetNthLabelObject(i)->GetIndex(j)[1];
 			//zTmp = labelMap->GetNthLabelObject(i)->GetIndex(j)[2];
 
-			xMean += xTmp;
-			yMean += yTmp;
-			zMean += zTmp;
+			/*xMean += xTmp;
+			 yMean += yTmp;
+			 zMean += zTmp;*/
+
+			xMean = math::timeAverage(xTmp, j + 1, xMean);
+			yMean = math::timeAverage(yTmp, j + 1, yMean);
+			zMean = math::timeAverage(zTmp, j + 1, zMean);
 
 			min[0] = (xTmp < min[0]) ? xTmp : min[0];
 			min[1] = (yTmp < min[1]) ? yTmp : min[1];
@@ -544,7 +548,8 @@ void computeLabelMapStatistics(type::labelMapType3D::Pointer labelMap, std::stri
 
 		outputFile << labelMap->GetNthLabelObject(i)->Size() << ", ";
 
-		outputFile << "[" << xMean / size << "- " << yMean / size << "- " << zMean / size << "]" << std::endl;
+		//outputFile << "[" << xMean / size << "- " << yMean / size << "- " << zMean / size << "]" << std::endl;
+		outputFile << "[" << xMean << "- " << yMean << "- " << zMean << "]" << std::endl;
 
 	}
 
@@ -564,7 +569,7 @@ void computeLabelMapStatisticsThread(const type::labelMapType3D::Pointer& labelM
 	//unsigned numberOfObjects = labelMap->GetNumberOfLabelObjects();
 	int tmpPercentage = 0;
 
-	std::cout<<"lower "<<lowerIndex<<" upper "<<upperIndex<<std::endl;
+	std::cout << "lower " << lowerIndex << " upper " << upperIndex << std::endl;
 	for (unsigned i = lowerIndex; i < upperIndex; ++i)
 	{
 		lineMetric << i + 1 << ", ";
@@ -581,9 +586,9 @@ void computeLabelMapStatisticsThread(const type::labelMapType3D::Pointer& labelM
 
 		//computing centroid and bounding box
 
-		long long int xMean = 0;
-		long long int yMean = 0;
-		long long int zMean = 0;
+		double xMean = 0;
+		double yMean = 0;
+		double zMean = 0;
 
 		std::vector<int> min(3, 100000000);
 		std::vector<int> max(3, 0);
@@ -606,9 +611,13 @@ void computeLabelMapStatisticsThread(const type::labelMapType3D::Pointer& labelM
 			yTmp = index[1];
 			zTmp = index[2];
 
-			xMean += xTmp;
-			yMean += yTmp;
-			zMean += zTmp;
+			/*xMean += xTmp;
+			 yMean += yTmp;
+			 zMean += zTmp;*/
+
+			xMean = math::timeAverage(xTmp, j + 1, xMean);
+			yMean = math::timeAverage(yTmp, j + 1, yMean);
+			zMean = math::timeAverage(zTmp, j + 1, zMean);
 
 			min[0] = (xTmp < min[0]) ? xTmp : min[0];
 			min[1] = (yTmp < min[1]) ? yTmp : min[1];
@@ -630,9 +639,10 @@ void computeLabelMapStatisticsThread(const type::labelMapType3D::Pointer& labelM
 		lineMetric << std::abs(max[1] - min[1]) << ", ";
 
 		//lineMetric << labelMap->GetNthLabelObject(i)->Size() << ", ";
-		lineMetric << objectSize<<", ";
+		lineMetric << objectSize << ", ";
 
-		lineMetric << "[" << xMean / objectSize << "- " << yMean / objectSize << "- " << zMean / objectSize << "] thread" << threadNumber<<std::endl;
+		//lineMetric << "[" << xMean / objectSize << "- " << yMean / objectSize << "- " << zMean / objectSize << "] thread" << threadNumber << std::endl;
+		lineMetric << "[" << xMean << "- " << yMean << "- " << zMean << "] thread" << threadNumber << std::endl;
 
 		metrics[i] = lineMetric.str();
 		//std::cout<<metrics[i]<<std::endl;
@@ -672,9 +682,7 @@ void computeLabelMapStatisticsMuiltiThread(type::labelMapType3D::Pointer labelMa
 			incrementControl -= step;
 			threads[i] = std::thread(computeLabelMapStatisticsThread, std::cref(labelMap), std::ref(metrics), lowerIndex, partialSize, i);
 
-			std::cout<<lowerIndex<<" "<<partialSize<<std::endl;
-
-
+			std::cout << lowerIndex << " " << partialSize << std::endl;
 
 		}
 		else
@@ -683,11 +691,10 @@ void computeLabelMapStatisticsMuiltiThread(type::labelMapType3D::Pointer labelMa
 			partialSize = metrics.size();
 			threads[i] = std::thread(computeLabelMapStatisticsThread, std::cref(labelMap), std::ref(metrics), lowerIndex, partialSize, i);
 
-			std::cout<<lowerIndex<<" last "<<partialSize<<std::endl;
+			std::cout << lowerIndex << " last " << partialSize << std::endl;
 		}
 
 	}
-	
 
 	for (unsigned i = 0; i < numberOfThreads; ++i)
 	{
