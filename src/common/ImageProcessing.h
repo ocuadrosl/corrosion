@@ -493,7 +493,7 @@ void computeLabelMapStatistics(type::labelMapType3D::Pointer labelMap, std::stri
 		double yMean = 0;
 		double zMean = 0;
 
-		std::vector<int> min(3, 1000000);
+		std::vector<int> min(3, 9000000);
 		std::vector<int> max(3, 0);
 
 		int xTmp;
