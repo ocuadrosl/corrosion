@@ -54,8 +54,8 @@ int main(int argc, const char* argv[])
 	//creating and writing mesh
 	/*std::string vtkName = interface.getOutputDir() + "/" + interface.getTestName() + ".vtk";
 	type::meshTypePointer mesh = ip::extractIsoSurface(outputSegmentedImage, 0);
-	io::writeMesh(mesh, vtkName);
-*/
+	io::writeMesh(mesh, vtkName);*/
+
 	//computing metrics
 	if (interface.getStatistics3D())
 	{
@@ -85,7 +85,24 @@ int main(int argc, const char* argv[])
 		utils::computeStatistics2D(image3D.getInputImageSeries(), interface.getOutputDir() + "/" + interface.getTestName() + "MetricsBySliceInput.csv");
 	}
 
-	std::cout << "DONE" << std::endl;
+//	std::cout << "DONE" << std::endl;
+
+	std::cout<<"Trying to create a VTK mesh, it may fail due to the input image resolution"<<std::endl;
+	std::cout<<"Notice all volumes and metrics were already created and computed"<<std::endl;
+
+	 //creating and writing mesh
+        std::string vtkName = interface.getOutputDir() + "/" + interface.getTestName() + ".vtk";
+        type::meshTypePointer mesh = ip::extractIsoSurface(outputSegmentedImage, 0);
+        io::writeMesh(mesh, vtkName);
+
+
+	std::cout<<"DONE"<<std::endl;
+
+
+
+
+
+
 
 	return 0;
 }
