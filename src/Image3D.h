@@ -355,24 +355,28 @@ void Image3D::fillAbradedSamplesByInterpolation()
 		{
 			if ((breakPoint - 1) == i) //there is a break point
 			{
-				newImageSeries.push_back(imageSeries[i + 1]);
+				newImageSeries.push_back(imageSeries[i]);
+				std::cout << breakPoint << " " << i << std::endl;
+
 			}
 			else
 			{
 				type::grayImagePointer interpolatedImage;
 				interpolatedImage = ip::createImageByInterpolation<type::grayImageType>(imageSeries[i], imageSeries[i + 1], currentImage);
 				newImageSeries.push_back(interpolatedImage);
+				currentImage += stepSize;
 			}
-			currentImage += stepSize;
 		}
 
 	}
+
+	newImageSeries.push_back(imageSeries[imageSeries.size() - 1]);
 
 	inputImageSeries = imageSeries;
 
 	imageSeries = newImageSeries;
 
-	io::print("Interpolating images", 1);
+	io::print("Interpolating images dfrgdgfd", 1);
 }
 
 /*
@@ -483,7 +487,6 @@ void Image3D::imageSeriesSegmentation()
 
 	type::grayImageType::IndexType seed;
 
-	
 	//seed is not needed
 	seed[0] = 800;
 	seed[1] = 800;
@@ -496,7 +499,7 @@ void Image3D::imageSeriesSegmentation()
 	}
 
 	//segmenting the input image series, it may be improved later...
-	for(unsigned i=0; i <  inputImageSeries.size();++i )
+	for (unsigned i = 0; i < inputImageSeries.size(); ++i)
 	{
 		inputImageSeries[i] = ip::histogramThreshold<type::grayImageType>(inputImageSeries[i], "triangle", 100, 1, 0);
 	}
