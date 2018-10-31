@@ -548,8 +548,8 @@ void computeLabelMapStatistics(type::labelMapType3D::Pointer labelMap, std::stri
 
 		outputFile << labelMap->GetNthLabelObject(i)->Size() << ", ";
 
-		//outputFile << "[" << xMean / size << "- " << yMean / size << "- " << zMean / size << "]" << std::endl;
-		outputFile << "[" << xMean << "- " << yMean << "- " << zMean << "]" << std::endl;
+		std::cout << "[" << std::round(xMean) << "- " << std::round(yMean) << "- " << std::round(zMean) << "]" << std::endl;
+		outputFile << "[" << std::round(xMean) << "- " << std::round(yMean) << "- " << std::round(zMean) << "]" << std::endl;
 
 	}
 
