@@ -60,7 +60,7 @@ private:
 	void imageSeriesAlignment();
 	void fillAbradedSamplesByInterpolationAverage();
 	void fillAbradedSamplesByInterpolation();
-	void closeBorders(double radious);
+	void closeBorders(std::vector<type::grayImagePointer>& imageSeries, double radious);
 	void imageSeriesSegmentation();
 
 	type::grayImagePointer3D imageSeriesTo3DImage();
@@ -356,7 +356,6 @@ void Image3D::fillAbradedSamplesByInterpolation()
 			if ((breakPoint - 1) == i) //there is a break point
 			{
 				newImageSeries.push_back(imageSeries[i]);
-				std::cout << breakPoint << " " << i << std::endl;
 
 			}
 			else
@@ -376,7 +375,7 @@ void Image3D::fillAbradedSamplesByInterpolation()
 
 	imageSeries = newImageSeries;
 
-	io::print("Interpolating images dfrgdgfd", 1);
+	io::print("Interpolating images", 1);
 }
 
 /*
@@ -439,13 +438,14 @@ void Image3D::fillAbradedSamplesByInterpolationAverage()
  * This function uses a bounding circle approach to close open pits
  *
  * */
-void Image3D::closeBorders(double radious)
+void Image3D::closeBorders(std::vector<type::grayImagePointer>& imageSeries, double radious)
 {
 
 	//moments calculator typedefs
 	using momentsCalculatorType = itk::ImageMomentsCalculator<type::grayImageType>;
 	momentsCalculatorType::Pointer momentsCalculator = momentsCalculatorType::New();
 
+	//for each image series
 	for (unsigned i = 0; i < imageSeries.size(); ++i)
 	{
 		//center of gravity
@@ -468,18 +468,20 @@ void Image3D::closeBorders(double radious)
 			//<TODO> radius not radious 
 			if (math::euclideanDistance<type::grayImageType::IndexType>(it.GetIndex(), center) < radious) //is inside
 			{
-				it.Set(it.Get() == 0 ? 0 : 1); // <TODO> originally 1:0
+				//it.Set(it.Get() == 0 ? 0 : 1);
+				it.Set(it.Get());
 			}
 			else
 			{
 				it.Set(0);
+				//std::cout<<"negro"<<std::endl;
 
 			}
 		}
 
 	}
 
-	io::print("Closing borders by reducing radius", 1);
+	//io::print("Closing borders by reducing radius", 1);
 }
 
 void Image3D::imageSeriesSegmentation()
@@ -519,15 +521,28 @@ void Image3D::createImage3D()
 //fillAbradedSamplesByInterpolationAverage();
 	fillAbradedSamplesByInterpolation();
 
+	//closing borders
+	if (reducedRadius > -1)
+	{
+		closeBorders(this->imageSeries, this->reducedRadius);
+		closeBorders(this->inputImageSeries, this->reducedRadius);
+	}
+
 	image3D = imageSeriesTo3DImage();
 
 	imageSeriesSegmentation();
 
-	//closing borders
+	//again testing...
+	//todo no pone el background negro....
+
 	if (reducedRadius > -1)
 	{
-		closeBorders(this->reducedRadius);
+		closeBorders(this->imageSeries, this->reducedRadius);
+		closeBorders(this->inputImageSeries, this->reducedRadius);
+		io::print("Closing borders by reducing radius", 1);
 	}
+
+
 
 	segmentedImage3D = imageSeriesTo3DImage();
 

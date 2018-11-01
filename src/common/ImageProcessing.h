@@ -493,12 +493,12 @@ void computeLabelMapStatistics(type::labelMapType3D::Pointer labelMap, std::stri
 		double yMean = 0;
 		double zMean = 0;
 
-		std::vector<int> min(3, 9000000);
-		std::vector<int> max(3, 0);
+		std::vector<long long> min(3, 9000000);
+		std::vector<long long> max(3, 0);
 
-		int xTmp;
-		int yTmp;
-		int zTmp;
+		long long xTmp;
+		long long yTmp;
+		long long zTmp;
 
 		int partialPitPercentage = -1;
 		int tmpPercentage = 0;
@@ -548,7 +548,7 @@ void computeLabelMapStatistics(type::labelMapType3D::Pointer labelMap, std::stri
 
 		outputFile << labelMap->GetNthLabelObject(i)->Size() << ", ";
 
-		std::cout << "[" << std::round(xMean) << "- " << std::round(yMean) << "- " << std::round(zMean) << "]" << std::endl;
+		//std::cout << "[" << std::round(xMean) << "- " << std::round(yMean) << "- " << std::round(zMean) << "]" << std::endl;
 		outputFile << "[" << std::round(xMean) << "- " << std::round(yMean) << "- " << std::round(zMean) << "]" << std::endl;
 
 	}

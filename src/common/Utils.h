@@ -38,14 +38,14 @@ void computeStatistics2D(const std::vector<type::grayImagePointer> & imageSeries
 
 			//computing centroid and bounding box
 
-			int xMean = 0;
-			int yMean = 0;
+			double xMean = 0;
+			double yMean = 0;
 
-			std::vector<int> min(2, 10000000);
-			std::vector<int> max(2, 0);
+			std::vector<long long int> min(2, 10000000);
+			std::vector<long long int> max(2, 0);
 
-			int xTmp;
-			int yTmp;
+			long long int xTmp;
+			long long int yTmp;
 
 			int partialPitPercentage = -1;
 			int tmpPercentage = 0;
@@ -56,13 +56,15 @@ void computeStatistics2D(const std::vector<type::grayImagePointer> & imageSeries
 
 			for (unsigned j = 0; j < size; ++j)
 			{
-
 				index = labelObject->GetIndex(j);
 				xTmp = index[0];
 				yTmp = index[1];
 
-				xMean += xTmp;
-				yMean += yTmp;
+				//xMean += xTmp;
+				//yMean += yTmp;
+				xMean = math::timeAverage(xTmp, j + 1, xMean);
+				yMean = math::timeAverage(yTmp, j + 1, yMean);
+
 				min[0] = (xTmp < min[0]) ? xTmp : min[0];
 				min[1] = (yTmp < min[1]) ? yTmp : min[1];
 
@@ -85,7 +87,7 @@ void computeStatistics2D(const std::vector<type::grayImagePointer> & imageSeries
 			outputFile << labelMap->GetNthLabelObject(i)->Size() << ", ";
 
 			//position
-			outputFile << "[" << xMean / size << "- " << yMean / size << "]" << std::endl;
+			outputFile << "[" << std::round(xMean) << "- " << std::round(yMean) << "]" << std::endl;
 
 		}
 		std::cout << std::endl;
